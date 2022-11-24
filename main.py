@@ -38,7 +38,6 @@ async def on_message(message):
 
     if message.content[0:15] == '!weather hourly':
         try:
-            print('Hit weather hourly')
             location_name = message.content[16:]
             lat, lon = get_latitude_longitude(location_name)
             res = api_service.get_hourly_temps(lat, lon)
@@ -48,7 +47,6 @@ async def on_message(message):
 
     elif message.content[0:16] == '!weather highlow':
         try:
-            print('hit weather highlow')
             location_name = message.content[17:]
             lat, lon = get_latitude_longitude(location_name)
             res = api_service.get_todays_high_and_low(lat, lon)

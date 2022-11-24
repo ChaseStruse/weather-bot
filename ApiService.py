@@ -15,21 +15,21 @@ class ApiService:
 
     def get_todays_high_and_low(self, lat, lon):
         response = requests.get(self.url_creator(lat, abs(lon)))
-        return self.high_and_low_temps(response.json())
+        return self.convert_json_to_high_and_low_temps_string(response.json())
 
     def get_hourly_temps(self, lat, lon):
         response = requests.get(self.url_creator(lat, abs(lon)))
-        return self.convert_dict_to_str(self.hourly_temps(response.json()))
+        return self.convert_dict_to_str(self.combine_time_and_temperature_to_dictionary(response.json()))
 
     @staticmethod
-    def high_and_low_temps(json):
+    def convert_json_to_high_and_low_temps_string(json):
         temperatures = json['hourly']['temperature_2m']
         highTemp = max(temperatures)
         lowTemp = min(temperatures)
         return f'The high for today will be {highTemp} degrees fahrenheit and the low will be {lowTemp} degrees fahrenheit'
 
     @staticmethod
-    def hourly_temps(json):
+    def combine_time_and_temperature_to_dictionary(json):
         times = json['hourly']['time']
         temps = json['hourly']['temperature_2m']
         combined = dict(map(lambda time, temp: (time, temp), times, temps))
@@ -45,6 +45,6 @@ class ApiService:
         for key, value in dictionary.items():
             # Converts the key from string to date
             key_as_date = datetime.strptime(key, '%Y-%m-%dT%H:%M')
-            time = key_as_date.strftime("%H:%M:%S")
+            time = key_as_date.strftime("%H:%M")
             res += f'{time}: {str(value)} degrees fahrenheit \n'
         return res
