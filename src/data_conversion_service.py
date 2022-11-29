@@ -1,26 +1,7 @@
-import requests
-from datetime import date, datetime
+from datetime import datetime
+import numpy as np
 
-
-class ApiService:
-    def __init__(self):
-        self.defaultUrl = 'https://api.open-meteo.com/v1/forecast?'
-        self.todaysDate = date.today()
-
-    def url_creator(self, lat, lon):
-        url = (f'{self.defaultUrl}latitude={lat}&longitude=-{lon}&hourly=temperature_2m'
-               f'&daily=weathercode,temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit'
-               f'&timezone=America%2FChicago&start_date={self.todaysDate}&end_date={self.todaysDate}')
-        return url
-
-    def get_todays_high_and_low(self, lat, lon):
-        response = requests.get(self.url_creator(lat, abs(lon)))
-        return self.convert_json_to_high_and_low_temps_string(response.json())
-
-    def get_hourly_temps(self, lat, lon):
-        response = requests.get(self.url_creator(lat, abs(lon)))
-        return self.convert_dict_to_str(self.combine_time_and_temperature_to_dictionary(response.json()))
-
+class DataConversionService:
     @staticmethod
     def convert_json_to_high_and_low_temps_string(json):
         temperatures = json['hourly']['temperature_2m']
@@ -36,7 +17,7 @@ class ApiService:
         return combined
 
     @staticmethod
-    def convert_dict_to_str(dictionary):
+    def convert_temperature_dict_to_str(dictionary):
         # Converts the key from string to date
         date_key = datetime.strptime(list(dictionary.keys())[0], '%Y-%m-%dT%H:%M')
         # Uses converted date to prettify and adds it to the output
@@ -48,3 +29,21 @@ class ApiService:
             time = key_as_date.strftime("%H:%M")
             res += f'{time}: {str(value)} degrees fahrenheit \n'
         return res
+
+    @staticmethod
+    def convert_five_day_json_to_dict(json):
+        all_temps = json['hourly']['temperature_2m']
+        split_lists = [all_temps[x:x+24] for x in range(0, len(all_temps), 24)]
+        highs_and_lows_dict = {}
+
+        for index, day_list in enumerate(split_lists):
+            highs_and_lows_dict[str(index+1)] = day_list
+
+        return highs_and_lows_dict
+
+    @staticmethod
+    def convert_five_day_highs_and_lows_dict_to_str(dictionary):
+        message = ""
+        for key, value in dictionary.items():
+            message += f"Day {key}: High of {max(value)} and low of {min(value)} \n"
+        return message
