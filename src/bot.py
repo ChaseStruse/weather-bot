@@ -16,55 +16,63 @@ def get_latitude_longitude(location_name):
     geolocator = Nominatim(user_agent="MyApp")
     location = geolocator.geocode(location_name)
     lat = location.latitude
-    long = location.longitude
-    return lat, long
+    lon = location.longitude
+    return lat, lon
 
 
-@bot.command(name='weather_hourly')
-async def weather_hourly(ctx, *args):
+@bot.command(name='hourlytemps')
+async def hourly_temperatures(ctx, *args):
     try:
         location_name = ' '.join(args)
         print(location_name)
         lat, lon = get_latitude_longitude(location_name)
         res = api_service.get_hourly_temps(lat, lon)
         await ctx.send(f'`{res}`')
-    except:
+    except AttributeError:
         await ctx.send('Please ensure you have added City StateAbbreviation')
 
 
-@bot.command(name='weather_highlow')
-async def weather_high_low_temps(ctx, *args):
+@bot.command(name='todayshighlow')
+async def high_low_temps(ctx, *args):
     try:
         location_name = ' '.join(args)
         lat, lon = get_latitude_longitude(location_name)
         res = api_service.get_todays_high_and_low(lat, lon)
         await ctx.send(f'`{res}`')
-    except:
+    except AttributeError:
         await ctx.send('Please ensure you have added City StateAbbreviation')
 
 
-@bot.command(name='weather_5dayhighlow')
-async def weather_five_day_high_low_temps(ctx, *args):
+@bot.command(name='highlowforecast')
+async def forecast_high_low_temps(ctx, *args):
     try:
+        number_of_days = int(args[-1])
+        if number_of_days > 10:
+            raise ValueError
+
+        args = args[:-1]
         location_name = ' '.join(args)
         lat, lon = get_latitude_longitude(location_name)
-        res = api_service.get_five_day_highs_and_lows(lat, lon)
+        res = api_service.get_five_day_highs_and_lows(lat, lon, number_of_days)
         await ctx.send(f'`{res}`')
-    except:
+
+    except AttributeError:
         await ctx.send('Please ensure you have added City StateAbbreviation')
+    except ValueError:
+        await ctx.send('Forecast must be less than or equal to 10 days please')
 
 
 @bot.command(name='weather_help')
 async def weather_help(ctx):
     await ctx.send('List of Commands: \n '
-                   '`!weather_hourly` City StateAbbreviation \n '
-                   'ex: `!weather_hourly` Des Moines IA \n'
+                   '`!hourlytemps` City StateAbbreviation \n '
+                   'ex: `!hourlytemps` Des Moines IA \n'
                    '\n'
-                   '`!weather_highlow` City StateAbbreviation \n'
-                   'ex: `!weather_highlow` Des Moines IA \n'
+                   '`!todayshighlow` City StateAbbreviation \n'
+                   'ex: `!todayshighlow` Des Moines IA \n'
                    '\n'
-                   '`!weather_5dayhighlow` City StateAbbreviation \n'
-                   'ex: `!weather_5dayhighlow` Des Moines IA \n'
+                   '`!highlowforecast` City StateAbbreviation NumberOfDays (must be less than or equal to 10 days)\n'
+                   'ex: `!highlowforecast` Des Moines IA 10\n'
                    )
 
 
