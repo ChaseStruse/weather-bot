@@ -1,7 +1,7 @@
 import unittest
 import json
 
-from src.data_conversion_service import DataConversionService
+from src.services.data_conversion_service import DataConversionService
 
 
 class TestDataConversionService(unittest.TestCase):
