@@ -37,7 +37,9 @@ jobs:
           python-version: ${{ matrix.python-version }}
     
     - name: Install Dependencies
-      run: pip install pytest
+      run: 
+        pip install pytest
+        pip install requests
         
     - name: Run unit tests
       working-directory: ./tests
