@@ -27,5 +27,5 @@ class ApiService:
     def get_forecasted_high_low_temps(self, lat, lon, number_of_days):
         end_date = self.todaysDate + timedelta(days=number_of_days - 1)
         response = requests.get(self.url_creator(lat, abs(lon), self.todaysDate, end_date))
-        high_and_low_dict = self.conversionService.convert_five_day_json_to_dict(response.json())
-        return self.conversionService.convert_five_day_highs_and_lows_dict_to_str(high_and_low_dict)
+        high_and_low_dict = self.conversionService.convert_forecast_high_low_json_to_dict(response.json())
+        return self.conversionService.convert_forecast_highs_and_lows_dict_to_str(high_and_low_dict)
