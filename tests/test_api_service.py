@@ -1,6 +1,4 @@
-# This is where all the tests for TestingExamples.py
 import unittest
-import json
 from src.api_service import ApiService
 from datetime import date
 from unittest.mock import MagicMock
