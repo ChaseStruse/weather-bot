@@ -1,8 +1,8 @@
 import unittest
-from src.api_service import ApiService
+from src.services.api_service import ApiService
 from datetime import date
 from unittest.mock import MagicMock
-from src.data_conversion_service import DataConversionService
+from src.services.data_conversion_service import DataConversionService
 
 
 class TestApiService(unittest.TestCase):

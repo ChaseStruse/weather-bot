@@ -1,6 +1,6 @@
 import requests
 from datetime import timedelta, date
-from src.data_conversion_service import DataConversionService
+from src.services.data_conversion_service import DataConversionService
 
 
 class ApiService:

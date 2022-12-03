@@ -1,7 +1,7 @@
 import os
 import discord
 from dotenv import load_dotenv
-from api_service import ApiService
+from src.services.api_service import ApiService
 from geopy.geocoders import Nominatim
 from discord.ext.commands import Bot
 
