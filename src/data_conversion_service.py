@@ -1,5 +1,5 @@
 from datetime import datetime
-import numpy as np
+
 
 class DataConversionService:
     @staticmethod
@@ -31,19 +31,25 @@ class DataConversionService:
         return res
 
     @staticmethod
-    def convert_five_day_json_to_dict(json):
+    def convert_forecast_high_low_json_to_dict(json):
         all_temps = json['hourly']['temperature_2m']
-        split_lists = [all_temps[x:x+24] for x in range(0, len(all_temps), 24)]
-        highs_and_lows_dict = {}
+        all_days_with_times = json['hourly']['time']
 
-        for index, day_list in enumerate(split_lists):
-            highs_and_lows_dict[str(index+1)] = day_list
+        days = [all_days_with_times[x] for x in range(0, len(all_days_with_times), 24)]
+        temps_split_by_day = [all_temps[x:x + 24] for x in range(0, len(all_temps), 24)]
+
+        highs_and_lows_dict = {}
+        print(days)
+        for index, day_list in enumerate(temps_split_by_day):
+            date_key = datetime.strptime(days[index], '%Y-%m-%dT%H:%M')
+            date_key_formatted = f'{date_key.strftime("%m")}/{date_key.strftime("%d")}/{date_key.strftime("%Y")}'
+            highs_and_lows_dict[date_key_formatted] = day_list
 
         return highs_and_lows_dict
 
     @staticmethod
-    def convert_five_day_highs_and_lows_dict_to_str(dictionary):
+    def convert_forecast_highs_and_lows_dict_to_str(dictionary):
         message = ""
         for key, value in dictionary.items():
-            message += f"Day {key}: High of {max(value)} and low of {min(value)} \n"
+            message += f"{key}: High of {max(value)} and low of {min(value)} \n"
         return message
