@@ -53,7 +53,7 @@ async def forecast_high_low_temps(ctx, *args):
         args = args[:-1]
         location_name = ' '.join(args)
         lat, lon = get_latitude_longitude(location_name)
-        res = api_service.get_five_day_highs_and_lows(lat, lon, number_of_days)
+        res = api_service.get_forecasted_high_low_temps(lat, lon, number_of_days)
         await ctx.send(f'`{res}`')
 
     except AttributeError:
