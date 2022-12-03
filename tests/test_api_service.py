@@ -53,7 +53,7 @@ class TestApiService(unittest.TestCase):
         }
         mock_response.get.return_value = mock_response
         expected = f"Day 1: High of 15 and low of 10\n"
-        self.conversionService.convert_five_day_highs_and_lows_dict_to_str = MagicMock(return_value=expected)
+        self.conversionService.convert_forecast_highs_and_lows_dict_to_str = MagicMock(return_value=expected)
         actual = self._sut.get_forecasted_high_low_temps(1, 20, 1)
         self.assertEqual(actual, expected)
 
